@@ -12,10 +12,12 @@ import { loadComponents } from 'next/dist/server/load-components'
 import Loading from '@/components/Loading'
 function LoginPage() {
 
-  const { isAuth, loading } = useAppData()
+  const { isAuth, loading ,setLoading, setIsAuth} = useAppData()
   if (isAuth) redirect("/")
   const reponseGoogle = async (authResult: any) => {
     try {
+      setLoading(true)
+
       const result = await axios.post(`${user_service}/api/v1/login`, {
         code: authResult['code']
       })
@@ -25,7 +27,10 @@ function LoginPage() {
         path: "/"
       })
       toast.success(result.data.message)
+      setLoading(false)
+      setIsAuth(true)
     } catch (error) {
+      setLoading(false)
       console.log("error :", error)
       toast.error("problem while login with you.")
     }
