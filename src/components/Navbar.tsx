@@ -2,12 +2,14 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from './ui/button'
-import { LogIn, Menu, X } from 'lucide-react'
+import { CircleUserRound, LogIn, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAppData } from '@/context/AppContext'
 
 const Navbar = () => {
     const [isopen, setIsOpen] = useState(false)
 
+    const { loading, isAuth } = useAppData()
     return (
         <nav className='bg-white shadow-md p-4 z-50'>
             <div className='container flex justify-between items-center'>
@@ -27,11 +29,17 @@ const Navbar = () => {
                     <li>
                         <Link href={"/savedblogs"} className='hover:text-blue-500'>Saved Blogs</Link>
                     </li>
-                    <li>
-                        <Link href={"/login"} className='hover:text-blue-500'>
-                            <LogIn className='h-6 w-6' />
-                        </Link>
-                    </li>
+                    {isAuth ?
+                        <li>
+                            <Link href={"/profile"} className='hover:text-blue-500'>
+                                <CircleUserRound className='h-6 w-6' />
+                            </Link>
+                        </li>
+                        : <li>
+                            <Link href={"/login"} className='hover:text-blue-500'>
+                                <LogIn className='h-6 w-6' />
+                            </Link>
+                        </li>}
                 </ul>
             </div>
 
@@ -43,12 +51,17 @@ const Navbar = () => {
                     <li>
                         <Link href={"/savedblogs"} className='hover:text-blue-500'>Saved Blogs</Link>
                     </li>
-                    <li>
-                        <Link href={"/login"} className='hover:text-blue-500'>
-                            <LogIn className='h-6 w-6' />
-                        </Link>
-                    </li>
-
+                    {isAuth ?
+                        <li>
+                            <Link href={"/profile"} className='hover:text-blue-500'>
+                                <CircleUserRound className='h-6 w-6' />
+                            </Link>
+                        </li>
+                        : <li>
+                            <Link href={"/login"} className='hover:text-blue-500'>
+                                <LogIn className='h-6 w-6' />
+                            </Link>
+                        </li>}
                 </ul>
 
             </div>

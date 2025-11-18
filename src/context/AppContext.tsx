@@ -25,6 +25,9 @@ interface AppContextType {
     user: User | null;
     isAuth: boolean;
     loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -42,12 +45,11 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
         try {
             setLoading(true)
             const token = Cookies.get("token")
-            console.log(token)
+
             if (!token) {
                 setLoading(false)
                 return
             }
-            console.log("api called")
 
             const { data } = await axios.get(`${user_service}/api/v1/me`, {
                 headers: {
@@ -65,28 +67,29 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
             setLoading(false)
         }
     }
-    console.log("Context provider started")
+
+
     useEffect(() => {
         fetchUser()
     }, [])
 
     return (
-        <AppContext.Provider value={{ user, isAuth, loading }}>
+        <AppContext.Provider value={{ user, isAuth, loading,setIsAuth,setLoading,setUser }}>
             <GoogleOAuthProvider clientId="215032916124-ln6g73s0h6j084num4irgf3v5a1frnui.apps.googleusercontent.com">
                 <Toaster />
                 {children}
             </GoogleOAuthProvider>
-
         </AppContext.Provider>
     )
 }
 
 export const useAppData = (): AppContextType => {
     const context = useContext(AppContext)
-
+    console.log(context)
     if (!context) {
         throw new Error("useAppData must be used inside AppProvider")
     }
 
     return context
 }
+
