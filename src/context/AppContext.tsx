@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie'
 import axios from "axios";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google"
 
 export const user_service = "http://localhost:5000"
@@ -27,7 +27,8 @@ interface AppContextType {
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    logoutUser:()=> Promise<void>
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -36,6 +37,11 @@ interface AppContextProviderProps {
     children: ReactNode
 }
 
+const [blogLoading, setBlogLoading] = useState(false)
+
+async function fetchBlogs() {
+    
+}
 export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null)
     const [isAuth, setIsAuth] = useState(false)
@@ -56,6 +62,7 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
                     Authorization: `Bearer ${token}`
                 }
             })
+            console.log(data)
             setUser(data)
             setIsAuth(true)
             setLoading(false)
@@ -67,14 +74,19 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
             setLoading(false)
         }
     }
-
+  const logoutUser =async () => {
+    Cookies.remove("token");
+    setUser(null);
+    setIsAuth(false)
+    toast.success("User logged out")
+  };
 
     useEffect(() => {
         fetchUser()
     }, [])
 
     return (
-        <AppContext.Provider value={{ user, isAuth, loading,setIsAuth,setLoading,setUser }}>
+        <AppContext.Provider value={{ user, isAuth, loading,setIsAuth,setLoading,setUser,logoutUser }}>
             <GoogleOAuthProvider clientId="215032916124-ln6g73s0h6j084num4irgf3v5a1frnui.apps.googleusercontent.com">
                 <Toaster />
                 {children}
