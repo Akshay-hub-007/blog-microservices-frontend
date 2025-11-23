@@ -1,15 +1,21 @@
 "use client"
+import HomeLayout from '@/components/homelayout'
+import Loading from '@/components/Loading'
 import { useAppData } from '@/context/AppContext'
 import React from 'react'
 
 const page = () => {
-   const { loading,isAuth } =useAppData()
-   if(loading) {
-
-   }
-  //  if(!isAuth) re
+  const { loading, blogLoading, blogs } = useAppData()
   return (
-    <div>page</div>
+    <HomeLayout>
+      <div>
+        {
+          loading ? <Loading /> : <div className='container mx-auto px-4'>
+            
+          </div>
+        }
+      </div>
+    </HomeLayout>
   )
 }
 

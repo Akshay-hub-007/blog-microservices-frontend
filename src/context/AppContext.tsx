@@ -28,7 +28,13 @@ interface AppContextType {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    logoutUser:()=> Promise<void>
+    logoutUser: () => Promise<void>
+    blogs: Blog[] | null;
+    blogLoading: Boolean;
+    setQuery: React.Dispatch<React.SetStateAction<string>>;
+    query: string;
+    setCategory: React.Dispatch<React.SetStateAction<string>>;
+    category: string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -37,26 +43,60 @@ interface AppContextProviderProps {
     children: ReactNode
 }
 
-const [blogLoading, setBlogLoading] = useState(false)
+export interface Blog {
+    id: string;
+    title: string;
+    description: string;
+    blogcontent: string;
+    image: string;
+    category: string;
+    author: string;
+    created_at: string;
+}
 
-async function fetchBlogs() {
-    
+interface SavedBlogType {
+    id: string;
+    userid: string;
+    blogid: string;
+    create_at: string;
 }
 export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null)
     const [isAuth, setIsAuth] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [blogLoading, setBlogLoading] = useState(false)
+    const [blogs, setBlogs] = useState<Blog[] | null>(null)
+    const [query, setQuery] = useState("")
+    const [category, setCategory] = useState("")
+    async function fetchBlogs() {
+        try {
+            setBlogLoading(true)
+            const token = Cookies.get("token")
 
+            const { data } = await axios.get(`${blog_service}/api/v1/blog/all?searchQuery=${query}&category=${category}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(data)
+            setBlogs(data)
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setBlogLoading(false)
+        }
+    }
     async function fetchUser() {
         try {
             setLoading(true)
             const token = Cookies.get("token")
-
+            console.log(token)
             if (!token) {
                 setLoading(false)
                 return
             }
-
+            console.log("object")
             const { data } = await axios.get(`${user_service}/api/v1/me`, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -74,19 +114,25 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
             setLoading(false)
         }
     }
-  const logoutUser =async () => {
-    Cookies.remove("token");
-    setUser(null);
-    setIsAuth(false)
-    toast.success("User logged out")
-  };
+    const logoutUser = async () => {
+        Cookies.remove("token");
+        setUser(null);
+        setIsAuth(false)
+        toast.success("User logged out")
+    };
 
     useEffect(() => {
         fetchUser()
+        fetchBlogs()
     }, [])
 
+    useEffect(() => {
+        console.log("fetching   ")
+        fetchBlogs()
+    }, [query, category])
+
     return (
-        <AppContext.Provider value={{ user, isAuth, loading,setIsAuth,setLoading,setUser,logoutUser }}>
+        <AppContext.Provider value={{ user, isAuth, loading, setIsAuth, setLoading, setUser, logoutUser, blogs, blogLoading, setQuery, query, setCategory, category }}>
             <GoogleOAuthProvider clientId="215032916124-ln6g73s0h6j084num4irgf3v5a1frnui.apps.googleusercontent.com">
                 <Toaster />
                 {children}

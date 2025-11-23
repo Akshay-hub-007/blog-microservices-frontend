@@ -16,11 +16,13 @@ function LoginPage() {
   if (isAuth) redirect("/")
   const reponseGoogle = async (authResult: any) => {
     try {
+      console.log("authresult")
       setLoading(true)
-
+      console.log(authResult)
       const result = await axios.post(`${user_service}/api/v1/login`, {
         code: authResult['code']
       })
+      console.log("after")
       Cookies.set("token", result.data.token, {
         expires: 5,
         secure: true,

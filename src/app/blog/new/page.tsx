@@ -12,7 +12,7 @@ import axios from 'axios'
 import { author_service } from '@/context/AppContext'
 import toast from 'react-hot-toast'
 
-const blogCategories = [
+export const blogCategories = [
   "Technology",
   "Health",
   "Finance",
