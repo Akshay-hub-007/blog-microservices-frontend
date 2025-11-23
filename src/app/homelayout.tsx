@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
-import { SidebarProvider } from './ui/sidebar'
-import Sidebar from './Sidebar'
+import { SidebarProvider } from '../components/ui/sidebar'
+import Sidebar from '../components/Sidebar'
 interface BlogProps {
     children: ReactNode
 }

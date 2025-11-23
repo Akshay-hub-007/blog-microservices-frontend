@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
 import { Input } from './ui/input'
@@ -26,13 +27,13 @@ const SideBar = () => {
                     </SidebarGroupLabel>
                     <SidebarMenu>
                         <SidebarMenuItem>
-                            <SidebarMenuButton onChange={() => setCategory("")}>
+                            <SidebarMenuButton onClick={() => setCategory("")}>
                                 <BoxSelect /> All
                             </SidebarMenuButton>
 
                             {
                                 blogCategories.map((cat, i) => {
-                                    return <SidebarMenuButton key={i} onChange={() => setCategory(cat)}>
+                                    return <SidebarMenuButton key={i} onClick={() => setCategory(cat)}>
                                         <BoxSelect /> <span>{cat}</span>
                                     </SidebarMenuButton>
                                 })
