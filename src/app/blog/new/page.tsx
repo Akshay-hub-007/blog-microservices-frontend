@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic'
 import React, { useMemo, useRef, useState } from 'react'
 import Cookies from "js-cookie"
 import axios from 'axios'
-import { author_service } from '@/context/AppContext'
+import { author_service, useAppData } from '@/context/AppContext'
 import toast from 'react-hot-toast'
 
 export const blogCategories = [
@@ -41,7 +41,7 @@ const AddBlog = () => {
     image: "",
     blogcontent: ""
   });
-
+  const { fetchBlogs } = useAppData()
   const handleInputChange = (e: any) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
@@ -88,7 +88,7 @@ const AddBlog = () => {
       })
 
       setContent("");
-
+        fetchBlogs()
     } catch (error: any) {
       toast.error("Error in Creating blog")
       console.log(error)

@@ -35,6 +35,7 @@ interface AppContextType {
     query: string;
     setCategory: React.Dispatch<React.SetStateAction<string>>;
     category: string;
+    fetchBlogs: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -132,7 +133,7 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     }, [query, category])
 
     return (
-        <AppContext.Provider value={{ user, isAuth, loading, setIsAuth, setLoading, setUser, logoutUser, blogs, blogLoading, setQuery, query, setCategory, category }}>
+        <AppContext.Provider value={{ user, isAuth, loading, setIsAuth, setLoading, setUser, logoutUser, blogs, blogLoading, setQuery, query, setCategory, category, fetchBlogs }}>
             <GoogleOAuthProvider clientId="215032916124-ln6g73s0h6j084num4irgf3v5a1frnui.apps.googleusercontent.com">
                 <Toaster />
                 {children}
