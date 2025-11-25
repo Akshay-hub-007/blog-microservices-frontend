@@ -36,7 +36,7 @@ const EditorPage = () => {
     title: "",
     description: "",
     category: "",
-    image: "",
+    image: null,
     blogcontent: ""
   });
   const [existingImage, setExistingImage] = useState(null);
@@ -60,11 +60,9 @@ const EditorPage = () => {
           image: null,
           blogcontent: data.blog.image
         })
-        setContent(data.blog.content)
+        setContent(data.blog.blogcontent)
         setExistingImage(data.blog.image)
-        setTimeout(()=>{
-          fetchBlogs()
-        },4000)
+          
       } catch (error) {
         console.log("Error in fetching blog : ", error)
       } finally {
@@ -110,8 +108,9 @@ const EditorPage = () => {
 
       toast.success(data.message)
 
-     router.push(`/blog/${id}`)
-
+      router.push(`/blog/${id}`)
+      setTimeout(() => router.refresh(), 50)
+      fetchBlogs()
     } catch (error: any) {
       toast.error("Error in Creating blog")
       console.log(error)

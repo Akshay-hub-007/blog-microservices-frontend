@@ -6,11 +6,18 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Blog, blog_service, useAppData, User } from '@/context/AppContext'
 import axios from 'axios'
-import { Bookmark, Edit, Trash2 } from 'lucide-react'
+import { Bookmark, Edit, SectionIcon, Trash2, User2 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-
+import Cookies from "js-cookie"
+import toast from 'react-hot-toast'
+interface Comment {
+  userid:string;
+  comment:string;
+  created_at:string;
+  username:string;
+}
 const BlogPage = () => {
   const { isAuth, user } = useAppData()
   const { id } = useParams()
@@ -19,6 +26,21 @@ const BlogPage = () => {
   const [author, setAuthor] = useState<User | null>()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const [comments, setComments] = useState<Comment[]>([])
+  const fetchComments = async () => {
+    try {
+      const token = Cookies.get("token")
+      const { data } = await axios.get(`${blog_service}/api/v1/comment/${id}`)
+      console.log(data)
+      setComments(data)
+
+    } catch (error) {
+      console.log("Error in fetching comments")
+    }
+  }
+  useEffect(() => {
+    fetchComments()
+  }, [id])
   async function fetchBlogs() {
     try {
       setLoading(true)
@@ -36,7 +58,29 @@ const BlogPage = () => {
   useEffect(() => {
     fetchBlogs()
   }, [id])
+  const [comment, setComment] = useState("")
+  async function addComment() {
+    try {
 
+      setLoading(true)
+      const token = Cookies.get("token")
+      const { data } = await axios.post(`${blog_service}/api/v1/comment/${id}`, {
+        comment
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      toast.success(data.message)
+      setComment("")
+      fetchComments()
+    } catch (error) {
+      toast.error("Problem while adding comment")
+    } finally {
+      setLoading(false)
+    }
+  }
   if (!blog) {
     return <Loading />
   }
@@ -87,12 +131,39 @@ const BlogPage = () => {
               id='comment'
               className='my-2'
               placeholder='Type Your Comment here'
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
-            <Button>Post Comment</Button>
+            <Button onClick={addComment} disabled={loading} >{loading ? "Submitting..." : "Post Comment"}</Button>
           </CardContent>
         </Card>
 
       }
+
+      <Card>
+        <CardHeader>
+          <h3 className='text-lg font-medium'> All Comments</h3>
+        </CardHeader>
+        <CardContent>
+          {
+            comments && comments?.length > 0 && comments.map((comment, index) => {
+              return <div key={index} className='border-b py-2 flex  items-center gap-3'>
+                  <div>
+                    <p className='font-semibold flex items-center gap-1'>
+                      <span className='user border border-gray-400 rounded-full p-1'><User2/></span>
+                      {comment.username}
+                    </p>
+                    <p>{comment.comment}</p>
+                    <p className='text-xs text-gray-500'>{new Date(comment.created_at).toLocaleString()}</p>
+                  </div>
+                  {
+                    comment.userid == user?._id && <Button variant={"destructive"}><Trash2/></Button>
+                  }
+              </div>  
+            })
+          }
+        </CardContent>
+      </Card>
     </div>
   )
 }
