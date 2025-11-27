@@ -12,7 +12,7 @@ import { loadComponents } from 'next/dist/server/load-components'
 import Loading from '@/components/Loading'
 function LoginPage() {
 
-  const { isAuth, loading ,setLoading, setIsAuth} = useAppData()
+  const { isAuth, loading ,setLoading, setIsAuth,setUser} = useAppData()
   if (isAuth) redirect("/")
   const reponseGoogle = async (authResult: any) => {
     try {
@@ -22,12 +22,14 @@ function LoginPage() {
       const result = await axios.post(`${user_service}/api/v1/login`, {
         code: authResult['code']
       })
+      console.log(result)
       console.log("after")
       Cookies.set("token", result.data.token, {
         expires: 5,
         secure: true,
         path: "/"
       })
+      setUser(result.data.user)
       toast.success(result.data.message)
       setLoading(false)
       setIsAuth(true)

@@ -27,7 +27,7 @@ const Navbar = () => {
                         <Link href={"/"} className='hover:text-blue-500'>Home</Link>
                     </li>
                     <li>
-                        <Link href={"/savedblogs"} className='hover:text-blue-500'>Saved Blogs</Link>
+                        <Link href={"/blog/saved"} className='hover:text-blue-500'>Saved Blogs</Link>
                     </li>
                     {isAuth ?
                         <li>

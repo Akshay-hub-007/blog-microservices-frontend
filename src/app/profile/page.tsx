@@ -107,7 +107,7 @@ const Page = () => {
                     },
                 }
             );
-
+            console.log(data)
             toast.success(data.message);
 
             Cookies.set("token", data.token, {
