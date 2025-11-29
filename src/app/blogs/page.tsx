@@ -6,14 +6,21 @@ import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/components/ui/sidebar'
 import { useAppData } from '@/context/AppContext'
 import { Filter } from 'lucide-react'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const page = () => {
     const { toggleSidebar } = useSidebar();
-    const { loading, blogLoading, blogs } = useAppData()
+    const { loading, blogLoading, blogs, isAuth } = useAppData()
     console.log(blogs)
     const list = Array.isArray(blogs) ? blogs : [];
+    const router = useRouter()
+    useEffect(() => {
+        if (!isAuth) {
 
+            router.push("/login")
+        }
+    }, [isAuth])
     return (
         <div>
             {loading ? (
