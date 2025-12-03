@@ -157,7 +157,7 @@ export const AppProvider: React.FC<AppContextProviderProps> = ({ children }) => 
 
     return (
         <AppContext.Provider value={{ user, isAuth, loading, setIsAuth, setLoading, setUser, logoutUser, blogs, blogLoading, setQuery, query, setCategory, category, fetchBlogs, savedBlogs,getSavedBlogs}}>
-            <GoogleOAuthProvider clientId="215032916124-ln6g73s0h6j084num4irgf3v5a1frnui.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId="1098009208623-ng4d6i26g0d7tokpbtf5bsi22hmoank7.apps.googleusercontent.com">
                 <Toaster />
                 {children}
             </GoogleOAuthProvider>

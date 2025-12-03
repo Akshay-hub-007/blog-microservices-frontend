@@ -8,7 +8,6 @@ import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 import { useGoogleLogin } from "@react-oauth/google"
 import { redirect } from 'next/navigation'
-import { loadComponents } from 'next/dist/server/load-components'
 import Loading from '@/components/Loading'
 function LoginPage() {
 
